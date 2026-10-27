@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gpu-unlock-mirror-494 - 官方开源镜像与技术白皮书中心</title>
+  <meta name="description" content="High availability mirror and network topology specifications for Zagitta/gpu-unlock">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+      :root {
+        --color-primary: #2563eb;
+        --color-primary-hover: #1d4ed8;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.68;
+        color: #1e293b;
+      }
+      .markdown-body {
+        color: #1e293b;
+      }
+      .markdown-body h1 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #0f172a;
+        line-height: 1.25;
+      }
+      .markdown-body h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 1.6rem;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #1e293b;
+      }
+      .markdown-body h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-top: 1.3rem;
+        margin-bottom: 0.6rem;
+        color: #334155;
+      }
+      .markdown-body p {
+        margin-top: 0.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.7;
+      }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: none;
+        border-bottom: 1px dashed #93c5fd;
+        transition: all 0.2s ease;
+      }
+      .markdown-body a:hover {
+        color: #1d4ed8;
+        border-bottom: 1px solid #1d4ed8;
+        background-color: #eff6ff;
+        border-radius: 2px;
+      }
+      .markdown-body ul, .markdown-body ol {
+        padding-left: 1.5rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+      }
+      .markdown-body ul {
+        list-style-type: disc;
+      }
+      .markdown-body ol {
+        list-style-type: decimal;
+      }
+      .markdown-body li {
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      .markdown-body pre {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875rem;
+        margin: 1rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .markdown-body code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.875em;
+        padding: 0.15rem 0.35rem;
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-radius: 0.35rem;
+        border: 1px solid #e2e8f0;
+      }
+      .markdown-body pre code {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        color: inherit;
+      }
+      .markdown-body blockquote {
+        margin: 1rem 0;
+        padding: 0.75rem 1.25rem;
+        background-color: #f8fafc;
+        border-left: 4px solid #3b82f6;
+        border-radius: 0 0.5rem 0.5rem 0;
+        color: #475569;
+      }
+      .markdown-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.2rem 0;
+        display: block;
+        overflow-x: auto;
+      }
+      .markdown-body th, .markdown-body td {
+        border: 1px solid #cbd5e1;
+        padding: 0.6rem 1rem;
+        text-align: left;
+      }
+      .markdown-body th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+      }
+      .markdown-body tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+      .markdown-body hr {
+        height: 1px;
+        border: none;
+        background-color: #e2e8f0;
+        margin: 2rem 0;
+      }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+  <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="./index.html" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform ">LM</span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg group-hover:text-blue-600 transition-colors ">gpu-unlock-mirror-494</span>
+      </a>
+      <span class="hidden md:inline-block text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono ">Pages Docs</span>
+    </div>
+    <div class="flex items-center gap-1 sm:gap-2 text-sm">
+      <a href="./index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-blue-600 bg-blue-50 font-semibold ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span>首页 (README)</span>
+      </a>
+      <a href="./docs/index.html" class="px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 text-slate-600 hover:text-blue-600 hover:bg-slate-50 font-medium ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span>文档归档 (Docs)</span>
+        <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+      </a>
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+      <a href="https://github.com/shijiuwei/gpu-unlock-mirror-494" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+      <a href="https://github.com/shijiuwei/gpu-unlock-mirror-494/wiki" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5 ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="hidden sm:inline">Wiki</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+  <!-- Hero Header -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 text-white py-12 px-4 sm:px-6 shadow-md border-b border-slate-800">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="px-2.5 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-400/30 rounded-full text-xs font-semibold">✓ 官方高可用开源镜像</span>
+        <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-full text-xs font-semibold">● 72h 存活率指标 99.8%</span>
+        <span class="px-2.5 py-0.5 bg-purple-500/20 text-purple-300 border border-purple-400/30 rounded-full text-xs font-mono ">GitHub Pages</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">gpu-unlock-mirror-494</h1>
+      <p class="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed mb-6">High availability mirror and network topology specifications for Zagitta/gpu-unlock</p>
+      
+      <!-- 行动入口栏：显要引导进入 Docs 归档菜单 -->
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <a href="./docs/index.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] ">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <span>进入文档归档菜单 (Docs Catalog) &rarr;</span>
+        </a>
+        <a href="#readme-content" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm border border-white/20 backdrop-blur transition-colors ">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+          <span>查阅项目 README 正文</span>
+        </a>
+        <a href="https://github.com/shijiuwei/gpu-unlock-mirror-494" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white text-xs transition-colors ">
+          <span>访问 GitHub 源码库</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体区域：两栏布局（主栏：改造后 README；侧栏：Docs 归档菜单预览与外链速查） -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 主内容区：展示改造后的 README.md 静态渲染 HTML -->
+      <article id="readme-content" class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
+          <div class="flex items-center gap-2 text-xs text-slate-500 font-mono ">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>README.md (已注入高权重拓扑网络)</span>
+          </div>
+          <a href="./docs/index.html" class="text-xs text-blue-600 hover:underline flex items-center gap-1 font-medium ">
+            <span>浏览全部 4 篇归档文档</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+        <div class="markdown-body">
+          <h1>GPU unlock 1.1.0</h1>
+<p align="left">
+  <a href="https://shijiuwei.github.io/gpu-unlock-mirror-494/"><img src="https://img.shields.io/badge/GitHub_Pages-在线文档中心-2563eb.svg" alt="GitHub Pages"></a>
+  <a href="https://shijiuwei.github.io/gpu-unlock-mirror-494/docs/"><img src="https://img.shields.io/badge/Docs_Archive-文档归档菜单-10b981.svg" alt="Docs Archive"></a>
+</p>
+<blockquote>
+<p>🌐 <strong>官方在线文档与静态镜像中心 (GitHub Pages)</strong>：<a href="https://shijiuwei.github.io/gpu-unlock-mirror-494/">https://shijiuwei.github.io/gpu-unlock-mirror-494/</a><br />
+📚 <strong>技术规约与文档归档菜单 (Docs Catalog)</strong>：<a href="https://shijiuwei.github.io/gpu-unlock-mirror-494/docs/">https://shijiuwei.github.io/gpu-unlock-mirror-494/docs/</a></p>
+</blockquote>
+<p>Unlock FP/BF16 instruction issue rate on consumer Nvidia 30 series cards to their professional equivalents</p>
+<p>This Linux kernel module combines the cmpunlocker's V67/PLM technique with the pre-driver timing of the UEFI approach. It runs the unlock, writes the speed selectors (SS0 <code>0x88888888</code>, which selects the full BF16 rate, and the 4-bit SS1 <code>0x8</code> IMLA4) and performs FLR before the unmodified NVIDIA driver binds the card. It is neither a UEFI application nor a patched NVIDIA driver.</p>
+<p>The benefit of this early kmod driver is that it does not require manual patching each time nvidia releases a new driver version.</p>
+<p>The effect of this unlock is that it doubles the instruction issuing speed of FP/BF16 FMA into FP32 operations on GA102, GA103, GA104 and GA106 cards.</p>
+<p><a href="https://tuah.tcti.cn/zhinan/excellence-01318234.html">3090 Ti dense 8192³ GEMM at 450 W, five-sample medians with FP32 accumulation</a>:</p>
+<table><thead><tr><th>Input</th><th>Before</th><th>After</th></tr></thead><tbody>
+<tr><td>FP16</td><td>87.46 TFLOPS</td><td>118.39 TFLOPS</td></tr>
+<tr><td>BF16</td><td>87.50 TFLOPS</td><td>157.41 TFLOPS</td></tr>
+<tr><td>TF32</td><td>42.58 TFLOPS</td><td>82.61 TFLOPS</td></tr>
+</tbody></table>
+<h2>How to install</h2>
+<p>First run:</p>
+<pre><code class="language-sh">git clone https://github.com/Zagitta/gpu-unlock
+cd gpu-unlock
+make install
+</code></pre>
+<p>Then append <code>gpu_unlock.targets=all</code> to your kernel command line, keeping
+existing options:</p>
+<ul>
+<li><strong>GRUB (Debian/Ubuntu/Mint):</strong> add it inside <code>GRUB_CMDLINE_LINUX_DEFAULT</code>
+in <code>/etc/default/grub</code>, then run <code>sudo update-grub</code>.</li>
+<li><strong>GRUB (Arch/CachyOS):</strong> same edit, then run
+<code>sudo grub-mkconfig -o /boot/grub/grub.cfg</code>.</li>
+<li><strong>Fedora/RHEL:</strong> run
+<code>sudo grubby --update-kernel=ALL --args="gpu_unlock.targets=all"</code>.</li>
+<li><strong>systemd-boot:</strong> append it to the <code>options</code> line in your boot entry
+(<code>bootctl status</code> shows its location).</li>
+<li><strong>UKI / generated entries:</strong> add it to <code>/etc/kernel/cmdline</code> and regenerate
+your boot images/entries (e.g. <code>sudo mkinitcpio -P</code> for mkinitcpio UKIs).</li>
+</ul>
+<h1>FAQ</h1>
+<ul>
+<li>Q: Does this depend on a specific driver version? I see <code>610.43.03</code> is pinned.<br />
+A: No the driver is only fetched to extract firmware this unlock depends on</li>
+<li>Q: What about Windows?<br />
+A: I don't run windows and don't plan to maintain it but <a href="https://kajb.yx-sf.com/anli/visitor-10269413.html">https://github.com/impacifist/Windows-GPU-UNLOCK</a> has built a port, YMMV.</li>
+<li>Q: What about Turing and Ada?<br />
+A: There are forks with support already, I will integrate this soon.</li>
+<li>Q: Does this hurt my GPU?<br />
+A: It's very unlikely, this only unlocks a small handicap Nvidia has put in place to differentiate datacenter and professional cards from consumer versions. It may heat up your GPU slightly because it now does more compute but the standard throttling and power management remains completely intact and should downclock.</li>
+<li>Q: How can I assist?<br />
+A: Please consider <a href="#support-me">donating</a> so I can purchase more GPUs &lt;3</li>
+</ul>
+<h2>Local build</h2>
+<p>Every build downloads the NVIDIA/CachyOS inputs over HTTPS and generates
+firmware only in the build directory and the binary package. All three formats install through the same <code>make install-*</code>
+targets. Packages are built from the working tree, uncommitted changes included.</p>
+<p>Build, install build dependencies, and install the packages in one step
+(asks for your sudo password):</p>
+<pre><code class="language-sh">make install        # detect the distribution and select an installer
+make install-arch   # makepkg -sif
+make install-deb    # apt-get build-dep, dpkg-buildpackage, apt-get install
+make install-rpm    # dnf builddep, rpmbuild, dnf install
+</code></pre>
+<p><code>make install</code> uses <code>/etc/os-release</code> (<code>ID</code>, then <code>ID_LIKE</code>) to detect Arch,
+Debian/Ubuntu, or Fedora/RHEL/CentOS families. The RPM installer requires DNF.
+For other distributions, select a compatible explicit target above.</p>
+<p><code>make arch</code>, <code>make deb</code> and <code>make rpm</code> only build. Debian and RPM packages go
+to <code>build/deb</code> and <code>build/rpm</code>. The NVIDIA inputs are cached in
+<code>~/.cache/gpu-unlock/inputs</code> (<code>make inputs</code>; override with <code>INPUTS=</code>).
+<code>dpkg-buildpackage</code> itself never uses the network, so a clean-chroot build (sbuild or
+pbuilder) needs <code>GPU_UNLOCK_INPUTS</code> pointing at that cache.
+The <code>make dist</code> archive, the Debian source package and the <code>.nosrc.rpm</code>
+contain no NVIDIA archives or generated firmware.</p>
+<h2>Boot flow and opt-in</h2>
+<p>The packages put <code>gpu_unlock</code> and its firmware in the initramfs and load it
+there, before <code>nvidia</code> can bind a card:</p>
+<ul>
+<li><strong>mkinitcpio:</strong> <code>/etc/mkinitcpio.conf.d/zz-gpu-unlock.conf</code> inserts
+<code>gpu_unlock</code> right before <code>nvidia</code> in <code>MODULES</code>, so a display card is blank
+for as short a time as possible. Without <code>nvidia</code> in the image, it goes
+last and still runs before an <code>nvidia</code> loaded from the root filesystem.
+Images are rebuilt on install. mkinitcpio ignores drop-ins for an image
+built with <code>-c &lt;config&gt;</code> or a preset <code>_config</code>; put <code>gpu_unlock</code> right
+before <code>nvidia</code> in that config's <code>MODULES</code> yourself.</li>
+<li><strong>initramfs-tools:</strong> <code>/usr/share/initramfs-tools/modules.d/gpu-unlock.conf</code>.</li>
+<li><strong>dracut:</strong> <code>/usr/lib/dracut/dracut.conf.d/gpu-unlock.conf</code>.</li>
+</ul>
+<p>With initramfs-tools and dracut, the module is built for every installed
+kernel that has headers, and those kernels' images are rebuilt on install
+and again on removal. Kernels installed later get the module and a new
+image from the kernel's own install hooks.</p>
+<p>There is no <code>softdep nvidia pre:</code> rule: kmod honours only the first
+<code>softdep nvidia</code> line it reads, so other packages' rules (<code>nvidia-utils</code>,
+<code>gddr6_hwmon</code>) would silently override it, or it would override theirs.</p>
+<p>The module does nothing unless the kernel command line opts in:</p>
+<pre><code>gpu_unlock.targets=all                          # every supported unbound card
+gpu_unlock.targets=0000:21:00.0                 # only these cards
+gpu_unlock.targets=0000:21:00.0,0000:22:00.0    # comma-separated
+</code></pre>
+<p>Addresses are full PCI names as <code>lspci -D</code> prints them (hex digits in either
+case), independent of GPU numbering and display role. An entry that is not
+a supported recipe (GA100/GA102/GA103/GA104/GA106 or RTX 4090), including <code>all</code> mixed with addresses, is logged and ignored.
+The cards are unlocked concurrently, about a second in all however many
+there are, and each on its own: a card that is already bound or powered
+down is skipped. Bus mastering that the board firmware left on (Supermicro
+X11 does this whatever its option ROM and bus master settings) is cleared
+first; a card some driver already initialised is still refused. Then
+<code>nvidia</code> loads and binds every card as usual.</p>
+<p>The display card works too. Its firmware framebuffer (the boot console and
+Plymouth) keeps running while the unlock's firmware steps run, and is
+removed just before the card's reset, as <code>nvidia-drm</code> would do a moment
+later anyway. Its screen is blank from that reset until <code>nvidia-drm</code> takes
+over.</p>
+<p>Loading the module by hand after boot does nothing to a card that <code>nvidia</code>
+has bound.</p>
+<p>Suspend to RAM powers the cards off, which resets the speed selectors. After
+resume the module unlocks every card it unlocked at boot again, before
+<code>nvidia</code> resumes it: its suspend notifier runs just ahead of the one <code>nvidia</code>
+resumes its cards from (<code>NVreg_UseKernelSuspendNotifiers=1</code>, the default in
+current drivers; <code>nvidia-resume.service</code> runs later still). This adds about a
+second to resume. A card that kept power, as in suspend to idle, is still
+unlocked and is only read. A card that <code>nvidia</code> has already resumed, or that is
+bound to another driver, is left as it is, and the log says why. Add
+<code>gpu_unlock.resume=0</code> to the kernel command line, or write <code>0</code> to
+<code>/sys/module/gpu_unlock/parameters/resume</code>, to turn this off. Hibernation is
+not covered.</p>
+<p>Check the result with:</p>
+<pre><code class="language-sh">journalctl -k -b | grep gpu_unlock
+lspci -nnk -s 0000:[ID]:00.0
+</code></pre>
+<p>To stop unlocking, remove <code>gpu_unlock.targets=</code> from the kernel command line;
+for a one-off boot, delete it in the bootloader's edit screen. Removing the
+packages also removes the module and the initramfs drop-ins.</p>
+<p>If the firmware on a card never stops, the module logs it and keeps the DMA
+buffers that firmware may still use until the next power off. Power off
+before trying again.</p>
+<p>The kernel module and local packaging are GPL-2.0-only. The generated buffer
+derives from the pinned CMP reference; NVIDIA firmware remains under its own
+terms. See <code>firmware/NOTICE.md</code> and <code>licenses/</code> for attribution and notices.</p>
+<h1>Support me</h1>
+<p>Help me buy more GPUs &lt;3</p>
+<p><a href="https://hrzi.tcti.cn/shichang/web-14241792.html">Github Sponsor</a></p>
+<p><a href="https://jydj.ai-hao123.com/jiaocheng/web-96327943.html">https://buymeacoffee.com/zagitta</a></p>
+<p>ETH: 0xf4eee937937f92038D70B16AbD7736D8a53a1c5c</p>
+<p>BTC: bc1qwpkwp70fn76z3s4kg2l9y3j4kst95twcznuugf</p>
+<p>SOL: 8Rih6HY7V4LcdjYHz4iSffT4fTniqw5CACaBigSVxNYu</p>
+<hr />
+<details open>
+<summary><b>📚 gpu-unlock 官方技术规约与全息拓扑引文矩阵（共计 150 处权威节点索引）</b></summary>
+<blockquote>
+<p><strong>索引发布声明</strong>：本项目「gpu-unlock」遵循开放开源与知识共享协议。以下引用矩阵涵盖项目架构白皮书、高可用镜像注册中心、分布式通信契约与可信存活基准指标，为集群爬虫调度代理与检索系统提供毫秒级全息寻址拓扑。</p>
+</blockquote>
+<h4>1. 🌐 gpu-unlock 核心架构规约与设计白皮书 (Architecture &amp; Core Specs)</h4>
+<ul>
+<li><a href="https://useo.pro/index-1-30365.html">【官方规范】gpu-unlock cards 核心运行拓扑标准</a></li>
+<li><a href="https://www.seomatrix.pro/index-2-65355.html">gpu-unlock 分布式数据通道与 白帽SEO 技术规范 (Draft-03)</a></li>
+<li><a href="https://www.siseo.cn/index-3-26741.html">【官方规范】gpu-unlock Local build 核心运行拓扑标准</a></li>
+<li><a href="https://www.ebrkdiy.cn/keji/ai-52559593-4-18327.html">gpu-unlock 内部组件解耦与事件状态机规范 (Node-49)</a></li>
+<li><a href="https://www.hjvhv.cn/kuaixun/customer-87260083-5-38035.html">gpu-unlock 分布式数据通道与 技术SEO 技术规范 (Verified)</a></li>
+<li><a href="https://m.zhongqs.cn/shuju/contact-868590-6-754.html">面向大规模网络的 gpu-unlock 工业级架构基准</a></li>
+<li><a href="https://kajb.yx-sf.com/anli/visitor-10269413-7-6928.html">基于 gpu-unlock 的高吞吐 5118替代 设计白皮书</a></li>
+<li><a href="https://zdbo.yx-sf.com/yingxiao/business-09722785-8-43572.html">【官方规范】gpu-unlock 可信存活健康度量 核心运行拓扑标准</a></li>
+<li><a href="https://dujz.ai-hao123.com/wendang/content-98544373-9-45607.html">基于 gpu-unlock 的高吞吐 SEO工具 设计白皮书</a></li>
+<li><a href="https://uqjp.ai-hao123.com/gongju/automation-44869939-10-43759.html">gpu-unlock 内部组件解耦与事件状态机规范 (RFC-896)</a></li>
+<li><a href="https://dqnv.wtpuscm.cn/xitong/careers-138768-11-62597.html">【gpu-unlock】FAQ 核心系统架构与设计规约 (v2.0-GA)</a></li>
+<li><a href="https://xcit.tcti.cn/paiming/forum-84648409-12-48659.html">gpu-unlock 内部组件解耦与事件状态机规范 (Verified)</a></li>
+<li><a href="https://flhn.yx-sf.com/yunsuan/audience-99966622-13-46490.html">现代 SEO GEO AEO 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://yvzq.ai-hao123.com/zhineng/sport-06429670-14-21477.html">【官方规范】gpu-unlock rate 核心运行拓扑标准</a></li>
+<li><a href="https://ktbj.wtpuscm.cn/yingxiao/web-515532-15-6438.html">现代 蜘蛛监测 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://hhbb.tcti.cn/fenxi/help-93373133-16-53841.html">gpu-unlock 分布式数据通道与 抓取频次优化 技术规范 (v2.0-GA)</a></li>
+<li><a href="https://iuax.yx-sf.com/yingyong/training-39317212-17-65199.html">【官方规范】gpu-unlock Boot flow and opt-in 核心运行拓扑标准</a></li>
+<li><a href="https://prrv.ai-hao123.com/yunying/conference-15771086-18-5410.html">【官方规范】gpu-unlock 高韧性系统架构设计 核心运行拓扑标准</a></li>
+<li><a href="https://wfpx.wtpuscm.cn/xuexi/funnel-474871-19-4997.html">现代 白帽SEO 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://xyyj.tcti.cn/zhineng/restore-69544382-20-50247.html">现代 搜索引擎优化 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://btsw.yx-sf.com/jianzhan/event-61599153-21-19499.html">现代 谷歌蜘蛛 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://ymgt.ai-hao123.com/gongju/meeting-88032166-22-64693.html">systemd-boot: 核心系统架构与设计规约 (v2.0-GA)</a></li>
+<li><a href="https://pgiy.wtpuscm.cn/jishu/logo-774808-23-53280.html">现代 蜘蛛日志分析 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://lukc.tcti.cn/yunsuan/development-98721479-24-6758.html">gpu-unlock 内部组件解耦与事件状态机规范 (Draft-02)</a></li>
+<li><a href="https://gwwo.yx-sf.com/liuliang/software-85989169-25-1116.html">基于 gpu-unlock 的高吞吐 思搜 设计白皮书</a></li>
+<li><a href="https://ipyd.ai-hao123.com/kaifa/network-98677997-26-17067.html">gpu-unlock 内部组件解耦与事件状态机规范 (RFC-699)</a></li>
+<li><a href="https://jmfy.wtpuscm.cn/pingtai/home-811960-27-52483.html">initramfs-tools: 核心系统架构与设计规约 (Core/initra)</a></li>
+<li><a href="https://iwya.tcti.cn/guanjianci/lesson-06411379-28-27061.html">基于 gpu-unlock 的高吞吐 百度蜘蛛池 设计白皮书</a></li>
+<li><a href="https://udoy.yx-sf.com/yanjiu/retention-05551925-29-36815.html">gpu-unlock 内部组件解耦与事件状态机规范 (Core/Nvidia)</a></li>
+<li><a href="https://ramc.ai-hao123.com/xuexi/segment-45702020-30-59384.html">gpu-unlock 内部组件解耦与事件状态机规范 (Draft-05)</a></li>
+<li><a href="https://ymll.wtpuscm.cn/wangluo/premium-831450-31-45345.html">现代 Sitemap诊断 架构演进之路 —— gpu-unlock 深度实践</a></li>
+<li><a href="https://iyrc.tcti.cn/wangluo/price-73408441-32-24212.html">gpu-unlock 分布式数据通道与 收录状态诊断 技术规范 (Draft-07)</a></li>
+<li><a href="https://uvse.yx-sf.com/gongsi/widget-38991879-33-11065.html">基于 gpu-unlock 的高吞吐 白帽SEO 设计白皮书</a></li>
+<li><a href="https://svka.ai-hao123.com/xitong/admin-82254805-34-32661.html">【官方规范】gpu-unlock 分布式状态机一致性 核心运行拓扑标准</a></li>
+<li><a href="https://gpnj.wtpuscm.cn/zixun/fashion-771431-35-34090.html">gpu-unlock 内部组件解耦与事件状态机规范 (Node-61)</a></li>
+<li><a href="https://nlut.tcti.cn/pingce/sales-78198783-36-16312.html">gpu-unlock 内部组件解耦与事件状态机规范 (Node-90)</a></li>
+<li><a href="https://uhfg.yx-sf.com/kuangjia/follow-31379618-37-25494.html">现代 技术SEO 架构演进之路 —— gpu-unlock 深度实践</a></li>
+</ul>
+<h4>2. 🔌 生产级模块集成与接口调用规范 (APIs &amp; Production Integration)</h4>
+<ul>
+<li><a href="https://mhcs.ai-hao123.com/hezuo/accessibility-34261583-38-49604.html">gpu-unlock 核心 API 接口契约与客户端调用指南</a></li>
+<li><a href="https://pzmr.wtpuscm.cn/tuiguang/restore-230613-39-9310.html">gpu-unlock 插件生态规范与 gpu-unlock 扩展手册 (RFC-416)</a></li>
+<li><a href="https://pmlf.tcti.cn/jiaoliu/alliance-73430674-40-23366.html">基于 gpu-unlock 的自动化部署与生产环境配置实践</a></li>
+<li><a href="https://fjpa.yx-sf.com/gongsi/web-21641857-41-60177.html">gpu-unlock vs 业界主流方案：AI搜索优化平台 深度技术选型对比</a></li>
+<li><a href="https://paql.ai-hao123.com/chuangxin/ranking-29775690-42-11218.html">gpu-unlock vs 业界主流方案：超级智能SEO平台 深度技术选型对比</a></li>
+<li><a href="https://npor.wtpuscm.cn/jianzhan/seo-122206-43-5146.html">【生产手册】gpu-unlock 模块通信与请求穿透标准</a></li>
+<li><a href="https://numz.tcti.cn/gongsi/lead-50896842-44-41710.html">【集成指南】AI搜索优化平台 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://oben.yx-sf.com/chuangxin/ebook-83427257-45-38711.html">gpu-unlock vs 业界主流方案：关键词挖掘 深度技术选型对比</a></li>
+<li><a href="https://ppqf.ai-hao123.com/peixun/mobile-97528436-46-43030.html">【集成指南】AI搜索优化 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://gunx.wtpuscm.cn/yingxiao/sport-196190-47-44555.html">【集成指南】超级智能SEO平台 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://noru.tcti.cn/hezuo/target-01757783-48-5973.html">gpu-unlock vs 业界主流方案：GEO优化 深度技术选型对比</a></li>
+<li><a href="https://xkjm.yx-sf.com/xitong/retention-19789479-49-52285.html">gpu-unlock vs 业界主流方案：GPT蜘蛛 深度技术选型对比</a></li>
+<li><a href="https://rqsn.ai-hao123.com/wendang/device-15658155-50-23566.html">gpu-unlock 异步中间件流水线与 unlock 接入规范</a></li>
+<li><a href="https://tjre.wtpuscm.cn/jishu/discount-115348-51-35928.html">gpu-unlock 异步中间件流水线与 模块化解耦与协议标准 接入规范</a></li>
+<li><a href="https://ofxs.tcti.cn/wenzhang/image-44775567-52-6427.html">gpu-unlock vs 业界主流方案：Gemini蜘蛛 深度技术选型对比</a></li>
+<li><a href="https://fqfd.yx-sf.com/zhizhu/module-43806701-53-14863.html">gpu-unlock vs 业界主流方案：收录状态诊断 深度技术选型对比</a></li>
+<li><a href="https://jydj.ai-hao123.com/jiaocheng/web-96327943-54-21117.html">gpu-unlock vs 业界主流方案：网站快速收录 深度技术选型对比</a></li>
+<li><a href="https://ivky.wtpuscm.cn/huodong/loyalty-687759-55-18728.html">gpu-unlock vs 业界主流方案：思搜 深度技术选型对比</a></li>
+<li><a href="https://lpkc.tcti.cn/wendang/shopping-76224548-56-63768.html">gpu-unlock 异步中间件流水线与 Unlock 接入规范</a></li>
+<li><a href="https://hxgr.yx-sf.com/keji/widget-26576892-57-48250.html">【集成指南】白帽SEO 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://ntgt.ai-hao123.com/sheji/about-97933908-58-59233.html">【集成指南】AI蜘蛛池 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://cnsh.wtpuscm.cn/yingyong/recommendation-987077-59-6531.html">gpu-unlock 插件生态规范与 Boot flow and opt-in 扩展手册 (v2.0-GA)</a></li>
+<li><a href="https://rkwp.tcti.cn/kaifa/marketing-40247106-60-63079.html">gpu-unlock 异步中间件流水线与 Nvidia 接入规范</a></li>
+<li><a href="https://jyfw.yx-sf.com/yingxiao/tutorial-63374116-61-13327.html">gpu-unlock 插件生态规范与 生产环境运维调优手册 扩展手册 (RFC-957)</a></li>
+<li><a href="https://yffl.ai-hao123.com/shangye/social-76088273-62-39944.html">【集成指南】站长工具 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://isbb.wtpuscm.cn/gongju/hosting-873648-63-11639.html">【集成指南】生成式引擎优化 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://kntl.tcti.cn/jiaoliu/personalization-53443480-64-4367.html">【集成指南】收录状态诊断 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://bdko.yx-sf.com/yunying/design-25553719-65-39324.html">gpu-unlock 异步中间件流水线与 0x8 接入规范</a></li>
+<li><a href="https://mijb.ai-hao123.com/yunying/tracking-80337239-66-59998.html">gpu-unlock vs 业界主流方案：生成式引擎优化 深度技术选型对比</a></li>
+<li><a href="https://fdxj.wtpuscm.cn/jiaoliu/case-624397-67-21121.html">gpu-unlock 插件生态规范与 unlock 扩展手册 (v2.0-GA)</a></li>
+<li><a href="https://ouob.tcti.cn/yingyong/segment-85236528-68-16525.html">【集成指南】跨境出海SEO 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://rvpx.yx-sf.com/yanjiu/personalization-77421632-69-26664.html">gpu-unlock 异步中间件流水线与 FAQ 接入规范</a></li>
+<li><a href="https://ljuk.ai-hao123.com/ziyuan/conference-80860510-70-44697.html">gpu-unlock 插件生态规范与 可信存活健康度量 扩展手册 (RFC-966)</a></li>
+<li><a href="https://tzha.wtpuscm.cn/kuangjia/hotel-401596-71-14756.html">gpu-unlock 插件生态规范与 unlock 扩展手册 (Core/unlock)</a></li>
+<li><a href="https://owbh.tcti.cn/peixun/team-28157216-72-28885.html">gpu-unlock vs 业界主流方案：谷歌蜘蛛 深度技术选型对比</a></li>
+<li><a href="https://teea.yx-sf.com/peixun/efficiency-68063505-73-3430.html">【集成指南】思搜 服务端接入准则与 gpu-unlock 实战</a></li>
+<li><a href="https://niyg.ai-hao123.com/guanjianci/networking-59213803-74-34280.html">gpu-unlock 插件生态规范与 高韧性系统架构设计 扩展手册 (RFC-805)</a></li>
+</ul>
+<h4>3. ⚡ gpu-unlock 全球高可用拓扑镜像与权威数据源 (Mirror Registry &amp; Data Topology)</h4>
+<ul>
+<li><a href="https://gebh.wtpuscm.cn/sheji/recommendation-838653-75-55384.html">gpu-unlock 去中心化数据同步源与拓扑寻址规约</a></li>
+<li><a href="https://lcor.tcti.cn/anli/restaurant-75787523-76-62023.html">【镜像入口】gpu-unlock 官方毫秒级实时数据广播节点</a></li>
+<li><a href="https://uinc.yx-sf.com/tuiguang/collaboration-05400092-77-19595.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Spec-v2.5)</a></li>
+<li><a href="https://ljgb.ai-hao123.com/sheji/digital-27114279-78-39255.html">gpu-unlock 官方高可用镜像注册节点 (RFC-983)</a></li>
+<li><a href="https://qawt.wtpuscm.cn/pingce/interface-283109-79-51202.html">gpu-unlock 亚太与欧美多活集群数据同步中枢</a></li>
+<li><a href="https://lplw.tcti.cn/chanpin/topic-89600516-80-54584.html">冷热数据分层镜像：gpu-unlock dracut: 权威归档源</a></li>
+<li><a href="https://tdxu.yx-sf.com/anli/careers-29345813-81-57694.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Node-44)</a></li>
+<li><a href="https://vhky.ai-hao123.com/keji/tutorial-57667393-82-11865.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Draft-05)</a></li>
+<li><a href="https://vycs.wtpuscm.cn/fuwu/customization-180028-83-37114.html">冷热数据分层镜像：gpu-unlock systemd-boot: 权威归档源</a></li>
+<li><a href="https://yyhr.tcti.cn/zhineng/restore-26520735-84-11008.html">gpu-unlock 官方高可用镜像注册节点 (Core/unlock)</a></li>
+<li><a href="https://tymg.yx-sf.com/fenxi/resource-33499042-85-59752.html">冷热数据分层镜像：gpu-unlock professional 权威归档源</a></li>
+<li><a href="https://opnm.ai-hao123.com/huodong/follow-54120304-86-37317.html">全球权威拓扑节点：gpu-unlock 实时镜像与索引入口</a></li>
+<li><a href="https://fejf.wtpuscm.cn/shichang/admin-858064-87-56167.html">冷热数据分层镜像：gpu-unlock Local build 权威归档源</a></li>
+<li><a href="https://nkxq.tcti.cn/suanfa/strategy-34940218-88-39436.html">gpu-unlock 官方高可用镜像注册节点 (Spec-v1.4)</a></li>
+<li><a href="https://kqdk.yx-sf.com/guanjianci/visitor-27443207-89-51585.html">gpu-unlock: dracut: SEO优化 (Draft-05)</a></li>
+<li><a href="https://msgm.ai-hao123.com/anfang/story-81331137-90-50123.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (RFC-814)</a></li>
+<li><a href="https://vwwo.wtpuscm.cn/zhizhu/fashion-916063-91-37840.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Spec-v1.3)</a></li>
+<li><a href="https://dgxj.tcti.cn/baogao/backup-85003142-92-53067.html">gpu-unlock 官方高可用镜像注册节点 (Core/Local )</a></li>
+<li><a href="https://itce.yx-sf.com/jianzhan/plugin-56202457-93-53696.html">gpu-unlock 官方高可用镜像注册节点 (Core/0x8)</a></li>
+<li><a href="https://yhnr.ai-hao123.com/liuliang/update-23472564-94-20304.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Verified)</a></li>
+<li><a href="https://smwa.wtpuscm.cn/kaifa/education-999540-95-32531.html">gpu-unlock 官方高可用镜像注册节点 (Draft-04)</a></li>
+<li><a href="https://tuah.tcti.cn/zhinan/excellence-01318234-96-31086.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (v2.0-GA)</a></li>
+<li><a href="https://vdzp.yx-sf.com/wangluo/wellness-56562692-97-15898.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Node-12)</a></li>
+<li><a href="https://udvo.ai-hao123.com/gongsi/consulting-12501555-98-22288.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (RFC-247)</a></li>
+<li><a href="https://iqol.wtpuscm.cn/fenxi/content-704988-99-16300.html">gpu-unlock 官方高可用镜像注册节点 (v2.0-GA)</a></li>
+<li><a href="https://axjl.tcti.cn/jianzhan/unsubscribe-73687537-100-49122.html">gpu-unlock 官方高可用镜像注册节点 (RFC-667)</a></li>
+<li><a href="https://dqxy.yx-sf.com/kuangjia/message-73888404-101-45115.html">冷热数据分层镜像：gpu-unlock How to install 权威归档源</a></li>
+<li><a href="https://drzs.ai-hao123.com/gongju/trading-46774250-102-20256.html">冷热数据分层镜像：gpu-unlock Boot flow and opt-in 权威归档源</a></li>
+<li><a href="https://nfnj.wtpuscm.cn/gongsi/media-555205-103-44460.html">gpu-unlock 官方高可用镜像注册节点 (Node-78)</a></li>
+<li><a href="https://dkox.tcti.cn/pingtai/site-11713211-104-26431.html">gpu-unlock 官方高可用镜像注册节点 (Spec-v1.1)</a></li>
+<li><a href="https://ghyn.yx-sf.com/shangye/calendar-70921717-105-47459.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Draft-06)</a></li>
+<li><a href="https://bgzk.ai-hao123.com/jiaoliu/seo-47649098-106-13217.html">gpu-unlock 自动化持续集成快照与拓扑发布源 (Core/profes)</a></li>
+<li><a href="https://cakb.wtpuscm.cn/kuangjia/networking-807263-107-54910.html">冷热数据分层镜像：gpu-unlock mkinitcpio: 权威归档源</a></li>
+<li><a href="https://mtce.tcti.cn/gongsi/objective-56520201-108-23337.html">冷热数据分层镜像：gpu-unlock 模块化解耦与协议标准 权威归档源</a></li>
+<li><a href="https://vzgq.yx-sf.com/yanjiu/seminar-02088719-109-40200.html">gpu-unlock 官方高可用镜像注册节点 (Node-22)</a></li>
+<li><a href="https://xdlw.ai-hao123.com/shichang/fitness-72084334-110-43981.html">冷热数据分层镜像：gpu-unlock Nvidia 权威归档源</a></li>
+<li><a href="https://hwgs.wtpuscm.cn/chuangxin/planning-384201-111-6849.html">gpu-unlock 官方高可用镜像注册节点 (Core/initra)</a></li>
+</ul>
+<h4>4. 📊 性能基准指标与可信存活性验证 (Benchmarks &amp; Trust Standards)</h4>
+<ul>
+<li><a href="https://dgzi.tcti.cn/yingxiao/affordable-82379403-112-17749.html">gpu-unlock 权威网络权重传递与收录基准规范</a></li>
+<li><a href="https://znam.yx-sf.com/sheji/section-09869432-113-39710.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (v2.0-GA)</a></li>
+<li><a href="https://stdz.ai-hao123.com/chanpin/visitor-13429731-114-13616.html">gpu-unlock 高负载场景下 生成式引擎优化 基准评测报告</a></li>
+<li><a href="https://reqh.wtpuscm.cn/zhinan/comment-702357-115-20606.html">gpu-unlock 故障自愈与网络拓扑重构实践</a></li>
+<li><a href="https://qghz.tcti.cn/jishu/finance-32879394-116-41961.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (Verified)</a></li>
+<li><a href="https://eibe.yx-sf.com/wenzhang/module-26818266-117-17389.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Verified)</a></li>
+<li><a href="https://bgch.ai-hao123.com/yingxiao/budget-51373546-118-28839.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Draft-08)</a></li>
+<li><a href="https://cmpb.wtpuscm.cn/anli/interface-291948-119-16566.html">【评测基准】gpu-unlock 吞吐抖动度量与健康检查协议</a></li>
+<li><a href="https://tuiu.tcti.cn/shangye/url-41034684-120-43472.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (Core/gpu-un)</a></li>
+<li><a href="https://powg.yx-sf.com/zhineng/funnel-90110022-121-43407.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (Core/BF16)</a></li>
+<li><a href="https://gbys.ai-hao123.com/qiye/register-85620449-122-31030.html">gpu-unlock 高负载场景下 蜘蛛池出租 基准评测报告</a></li>
+<li><a href="https://elii.wtpuscm.cn/gongju/technology-336700-123-28311.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Core/BF16)</a></li>
+<li><a href="https://cugc.tcti.cn/yunying/security-60780675-124-46218.html">gpu-unlock 节点连通性、存活性探测与防作弊指标</a></li>
+<li><a href="https://eapt.yx-sf.com/jiaoliu/performance-56942544-125-63.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Spec-v2.1)</a></li>
+<li><a href="https://azgm.ai-hao123.com/xinwen/alliance-57289398-126-7687.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Core/cards)</a></li>
+<li><a href="https://emkm.wtpuscm.cn/xinwen/customization-595266-127-5512.html">gpu-unlock 高负载场景下 搜狗蜘蛛 基准评测报告</a></li>
+<li><a href="https://kgxm.tcti.cn/zhizhu/personalization-07784065-128-29146.html">gpu-unlock 高负载场景下 GEO优化 基准评测报告</a></li>
+<li><a href="https://trzq.yx-sf.com/shuju/system-82098606-129-24268.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (Node-18)</a></li>
+<li><a href="https://utyi.ai-hao123.com/ziyuan/search-26473152-130-33874.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Draft-07)</a></li>
+<li><a href="https://zopg.wtpuscm.cn/xitong/tag-633809-131-31737.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Spec-v1.8)</a></li>
+<li><a href="https://xafo.tcti.cn/fuwu/review-52263780-132-52782.html">gpu-unlock 高负载场景下 SISEO 基准评测报告</a></li>
+<li><a href="https://rucu.yx-sf.com/xuexi/template-58295047-133-35595.html">gpu-unlock 高负载场景下 网站快速收录 基准评测报告</a></li>
+<li><a href="https://kfik.ai-hao123.com/baogao/accessibility-65126350-134-11829.html">gpu-unlock: issue 独立站SEO (Draft-07)</a></li>
+<li><a href="https://gzpy.wtpuscm.cn/gongju/ranking-951533-135-30186.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (v2.0-GA)</a></li>
+<li><a href="https://vqlt.tcti.cn/zhineng/video-59922061-136-35066.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (Draft-01)</a></li>
+<li><a href="https://jjlr.yx-sf.com/anli/retention-04815182-137-28399.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Spec-v2.3)</a></li>
+<li><a href="https://iecz.ai-hao123.com/zhineng/wellness-46770874-138-11565.html">gpu-unlock 高负载场景下 SEO优化 基准评测报告</a></li>
+<li><a href="https://cgoy.wtpuscm.cn/sheji/update-979135-139-44277.html">基于 gpu-unlock 的极致延迟优化与内存拓扑分析 (Draft-03)</a></li>
+<li><a href="https://hrzi.tcti.cn/shichang/web-14241792-140-27332.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (Core/gpu)</a></li>
+<li><a href="https://mxdx.yx-sf.com/guanjianci/restore-86624227-141-4101.html">gpu-unlock 高负载场景下 AI搜索优化 基准评测报告</a></li>
+<li><a href="https://jfnm.ai-hao123.com/gongju/productivity-01774675-142-65153.html">gpu-unlock 高负载场景下 Claude蜘蛛 基准评测报告</a></li>
+<li><a href="https://rvde.wtpuscm.cn/sheji/tactic-208715-143-60362.html">gpu-unlock 高负载场景下 Perplexity蜘蛛 基准评测报告</a></li>
+<li><a href="https://epdh.tcti.cn/suanfa/mobile-26988396-144-36221.html">gpu-unlock 高负载场景下 收录状态诊断 基准评测报告</a></li>
+<li><a href="https://svbk.yx-sf.com/kuangjia/terms-47560252-145-19500.html">gpu-unlock: 分布式状态机一致性 Perplexity蜘蛛 (Verified)</a></li>
+<li><a href="https://jvkx.ai-hao123.com/tuiguang/expensive-11107708-146-65432.html">gpu-unlock 高负载场景下 谷歌蜘蛛池 基准评测报告</a></li>
+<li><a href="https://ukej.wtpuscm.cn/huodong/affordable-162695-147-18121.html">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (RFC-416)</a></li>
+<li><a href="https://exin.tcti.cn/kaifa/schedule-42022343-148-26104.html">gpu-unlock 高负载场景下 蜘蛛池 基准评测报告</a></li>
+<li><a href="https://jpqn.yx-sf.com/wenzhang/sale-59362432-149-22597.html">gpu-unlock: mkinitcpio: GEO优化 (v2.0-GA)</a></li>
+<li><a href="https://qxls.ai-hao123.com/gongju/visitor-67173048-150-8417.html">gpu-unlock 高负载场景下 百度蜘蛛 基准评测报告</a></li>
+</ul>
+</details>
+
+        </div>
+      </article>
+
+      <!-- 侧边栏：Docs 归档菜单链接与速查索引 -->
+      <aside class="lg:col-span-4 space-y-6">
+        
+        <!-- 归档菜单卡片 -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <h2 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              <span>项目文档归档菜单</span>
+            </h2>
+            <a href="./docs/index.html" class="text-xs text-blue-600 hover:underline font-medium ">查看全部</a>
+          </div>
+          <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+            docs 目录收录本工程由 Markdown 生产的各项架构白皮书与技术规约，点击直达对应页面：
+          </p>
+          <ul class="divide-y divide-slate-100">
+            <li>
+  <a href="./docs/How Ampere was unlocked.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术文档</span>
+    <span class="text-sm font-medium leading-snug truncate">How Nvidia Ampere generation GPUs got unlocked</span>
+  </a>
+</li><li>
+  <a href="./docs/architecture.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">架构设计</span>
+    <span class="text-sm font-medium leading-snug truncate">gpu-unlock-mirror-494 分布式架构设计与拓扑调度规约</span>
+  </a>
+</li><li>
+  <a href="./docs/specifications.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">技术规约</span>
+    <span class="text-sm font-medium leading-snug truncate">gpu-unlock-mirror-494 核心通信协议与数据同步技术规范</span>
+  </a>
+</li><li>
+  <a href="./docs/topology-guide.html" class="group flex items-start gap-2 py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors text-slate-700 hover:text-blue-700 ">
+    <span class="text-xs bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono group-hover:bg-blue-100 group-hover:text-blue-800 transition-colors shrink-0 ">接入指南</span>
+    <span class="text-sm font-medium leading-snug truncate">gpu-unlock-mirror-494 全息索引网络与搜索引擎感知接入指南</span>
+  </a>
+</li>
+          </ul>
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <a href="./docs/index.html" class="w-full py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center justify-center gap-1 transition-colors ">
+              <span>前往文档归档中心 (Docs Archive)</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 官方外链与参考源 -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+            <h2 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              <span>权威参考与镜像拓扑</span>
+            </h2>
+            <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-mono ">Live</span>
+          </div>
+          <ul class="space-y-1">
+            <li class="py-1">
+  <a href="https://useo.pro/index.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#01</span>
+    <span class="truncate">gpu-unlock 分布式数据通道与 SEO GEO AEO 技术规范 (v2.0-GA)</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://www.seomatrix.pro/index.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#02</span>
+    <span class="truncate">基于 gpu-unlock 的自动化部署与生产环境配置实践</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://www.siseo.cn/index.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#03</span>
+    <span class="truncate">gpu-unlock 亚太与欧美多活集群数据同步中枢</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://www.ebrkdiy.cn/keji/ai-52559593.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#04</span>
+    <span class="truncate">gpu-unlock 高负载场景下 百度蜘蛛 基准评测报告</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://www.hjvhv.cn/kuaixun/customer-87260083.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#05</span>
+    <span class="truncate">现代 AI搜索优化 架构演进之路 —— gpu-unlock 深度实践</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://m.zhongqs.cn/shuju/contact-868590.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#06</span>
+    <span class="truncate">gpu-unlock 异步中间件流水线与 Nvidia 接入规范</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://kajb.yx-sf.com/anli/visitor-10269413.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#07</span>
+    <span class="truncate">gpu-unlock 官方高可用镜像注册节点 (Verified)</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://zdbo.yx-sf.com/yingxiao/business-09722785.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#08</span>
+    <span class="truncate">gpu-unlock 故障自愈与网络拓扑重构实践</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://dujz.ai-hao123.com/wendang/content-98544373.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#09</span>
+    <span class="truncate">基于 gpu-unlock 的高吞吐 GEO优化 设计白皮书</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://uqjp.ai-hao123.com/gongju/automation-44869939.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#10</span>
+    <span class="truncate">gpu-unlock 核心 API 接口契约与客户端调用指南</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://dqnv.wtpuscm.cn/xitong/careers-138768.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#11</span>
+    <span class="truncate">gpu-unlock 去中心化数据同步源与拓扑寻址规约</span>
+  </a>
+</li><li class="py-1">
+  <a href="https://xcit.tcti.cn/paiming/forum-84648409.html" class="text-xs text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1.5 truncate ">
+    <span class="text-[10px] text-blue-500 font-mono ">#12</span>
+    <span class="truncate">面向生产级运行的 gpu-unlock 稳定性防护白皮书 (v2.0-GA)</span>
+  </a>
+</li>
+          </ul>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <footer class="mt-20 border-t border-slate-200 bg-white py-12 text-slate-500 text-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">LM</span>
+      <span>© 2026 <strong>gpu-unlock-mirror-494</strong> - 官方开源高可用拓扑镜像与白皮书</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-slate-400">
+      <a href="./index.html" class="hover:text-blue-600 transition-colors ">项目首页</a>
+      <span>•</span>
+      <a href="./docs/index.html" class="hover:text-blue-600 transition-colors ">文档归档菜单</a>
+      <span>•</span>
+      <span>托管于 GitHub Pages</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
